@@ -143,6 +143,16 @@ class Beam:
         self._rct.move_ip(self._vx, self._vy)
         screen.blit(self._img, self._rct)
 
+    
+class Score:
+    """
+    スコアを表示
+    """
+    def __init__(self):
+        self.score=0
+    def update(self,screen):
+        self.txt=pg.font.Font(None,100).render(str(self.score),True,(0,0,0))    
+        screen.blit(self.txt,[150,150])
 
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
@@ -153,6 +163,7 @@ def main():
     bird = Bird(3, (900, 400))
     bombs = [Bomb() for _ in range(NUM_OF_BOMBS)]
     beam = None
+    scr = Score()
 
     tmr = 0
     while True:
@@ -165,7 +176,6 @@ def main():
         tmr += 1
         screen.blit(bg_img, [0, 0])
         
-        
         for bomb in bombs:
             bomb.update(screen)
             if bird._rct.colliderect(bomb._rct):
@@ -177,11 +187,13 @@ def main():
             
         key_lst = pg.key.get_pressed()
         bird.update(key_lst, screen)
+        Score().update(screen)
 
         if beam is not None:  # ビームが存在しているとき
             beam.update(screen)
             for i, bomb in enumerate(bombs):
                 if beam._rct.colliderect(bomb._rct):
+                    scr.score+=1
                     beam = None
                     del bombs[i]
                     bird.change_img(6, screen)
