@@ -10,6 +10,7 @@ HEIGHT = 900  # ゲームウィンドウの高さ
 NUM_OF_BOMBS = 5  # 爆弾の数
 
 
+
 def check_bound(area: pg.Rect, obj: pg.Rect) -> tuple[bool, bool]:
     """
     オブジェクトが画面内か画面外かを判定し，真理値タプルを返す
@@ -143,16 +144,17 @@ class Beam:
         self._rct.move_ip(self._vx, self._vy)
         screen.blit(self._img, self._rct)
 
-    
+
 class Score:
     """
-    スコアを表示
+    スコアに関するクラス
     """
     def __init__(self):
         self.score=0
     def update(self,screen):
-        self.txt=pg.font.Font(None,100).render(str(self.score),True,(0,0,0))    
-        screen.blit(self.txt,[150,150])
+        self.txt=pg.font.Font(None,80).render(str(self.score),True,(0,0,0))    
+        screen.blit(self.txt,[100,100])
+
 
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
@@ -163,7 +165,7 @@ def main():
     bird = Bird(3, (900, 400))
     bombs = [Bomb() for _ in range(NUM_OF_BOMBS)]
     beam = None
-    scr = Score()
+    scr=Score()
 
     tmr = 0
     while True:
@@ -175,6 +177,8 @@ def main():
 
         tmr += 1
         screen.blit(bg_img, [0, 0])
+        scr.update(screen)
+        
         
         for bomb in bombs:
             bomb.update(screen)
@@ -187,8 +191,6 @@ def main():
             
         key_lst = pg.key.get_pressed()
         bird.update(key_lst, screen)
-        Score().update(screen)
-
         if beam is not None:  # ビームが存在しているとき
             beam.update(screen)
             for i, bomb in enumerate(bombs):
